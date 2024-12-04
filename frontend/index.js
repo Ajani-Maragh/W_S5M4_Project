@@ -29,11 +29,12 @@ async function moduleProject4() {
       
       const res = await axios.get(url)
     
-      document.querySelector('.info').textContent = ''
       document.querySelector('#weatherWidget').style.display = 'block'
+      document.querySelector('.info').textContent = ''
       evt.target.removeAttribute('disabled')
       
       let {data} = res
+
       document.querySelector('#apparentTemp div:nth-child(2)')
       .textContent = `${data.current.apparent_temperature}°`
 
@@ -41,7 +42,7 @@ async function moduleProject4() {
       .textContent = descriptions.find(d => d[0] === data.current.weather_description)[1]
 
       document.querySelector('#todayStats div:nth-child(1)')
-      .textContent = `${data.current.temperature_min}/${data.current.temperature_max}`
+      .textContent = `${data.current.temperature_min}°/${data.current.temperature_max}°`
 
       document.querySelector('#todayStats div:nth-child(2)')
       .textContent = `Precipitation: ${data.current.precipitation_probability * 100}%`
@@ -61,9 +62,9 @@ async function moduleProject4() {
         let precipitaton = card.children[3]
 
         weekday.textContent = getDayOfWeek(day.date)
-        apparent.textContent = descriptions.find(d => d[0] === data.current.weather_description)[1]
+        apparent.textContent = descriptions.find(d => d[0] === day.weather_description)[1]
         minMax.textContent = `${day.temperature_min}°/${day.temperature_max}°`
-        precipitaton.textContent = `Precipitation ${day.precipitation_probability * 100}%`
+        precipitaton.textContent = `Precipitation: ${day.precipitation_probability * 100}%`
       })
 
       document.querySelector('#location').firstElementChild.textContent = data.location.city
@@ -73,11 +74,14 @@ async function moduleProject4() {
     }
   })
 
-  function getDayOfWeek(dates) {
-    const date = new Date(dates)
-    return date.toLocaleDateString('en-US', { weekday: 'long' })
+  function getDayOfWeek(dateString) {
+    
+    const [year, month, day] = dateString.split('-');
+    const date = new Date(Date.UTC(year, month - 1, day)); 
+    
+    return date.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' }); 
   }
-
+  
 
 
  
